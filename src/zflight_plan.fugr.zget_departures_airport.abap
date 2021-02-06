@@ -14,4 +14,9 @@ FUNCTION ZGET_DEPARTURES_AIRPORT .
     AND EXISTS ( SELECT * FROM sflight WHERE carrid = spfli~carrid
       AND connid = spfli~connid AND fldate = date ).
 
+  LOOP AT departures ASSIGNING FIELD-SYMBOL(<dep_flight>).
+    <dep_flight>-date = date.
+    <dep_flight>-airport = airport.
+  ENDLOOP.
+
 ENDFUNCTION.

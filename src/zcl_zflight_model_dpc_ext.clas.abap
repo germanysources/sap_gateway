@@ -10,7 +10,30 @@ CLASS zcl_zflight_model_dpc_ext DEFINITION
 
     METHODS flightplanset_get_entityset REDEFINITION.
 
+    METHODS flightplanset_create_entity REDEFINITION.
+
+    METHODS flightplanset_update_entity REDEFINITION.
+
+    METHODS flightplanset_delete_entity REDEFINITION.
+
   PRIVATE SECTION.
+    TYPES: BEGIN OF _primary_key,
+             carrierid    TYPE s_carr_id,
+             connectionid TYPE s_conn_id,
+           END OF _primary_key.
+
+    METHODS get_primary_key
+      IMPORTING
+                it_key_tab    TYPE /iwbep/t_mgw_name_value_pair
+      RETURNING VALUE(result) TYPE _primary_key.
+
+    METHODS verify_primary_key
+      IMPORTING
+        it_key_tab         TYPE /iwbep/t_mgw_name_value_pair
+        flight_plan_entity TYPE spfli
+      RAISING
+        /iwbep/cx_mgw_busi_exception.
+
 ENDCLASS.
 
 
@@ -18,20 +41,37 @@ ENDCLASS.
 CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
 
 
-  METHOD flightplanset_get_entity.
-    DATA: BEGIN OF primary_key,
-            carrierid    TYPE s_carr_id,
-            connectionid TYPE s_conn_id,
-          END OF primary_key.
+  METHOD flightplanset_create_entity.
+    DATA: flight_plan_entity TYPE spfli.
 
-    LOOP AT it_key_tab REFERENCE INTO DATA(key_value_pair).
-      ASSIGN COMPONENT key_value_pair->*-name
-        OF STRUCTURE primary_key
-        TO FIELD-SYMBOL(<comp>).
-      IF sy-subrc = 0.
-        <comp> = key_value_pair->*-value.
-      ENDIF.
-    ENDLOOP.
+    io_data_provider->read_entry_data( IMPORTING es_data = flight_plan_entity ).
+
+    INSERT spfli FROM flight_plan_entity.
+    IF sy-subrc = 0.
+      er_entity = flight_plan_entity.
+    ELSE.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 000 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD flightplanset_delete_entity.
+
+    DATA(primary_key) = get_primary_key( it_key_tab ).
+
+    DELETE FROM spfli WHERE carrid = primary_key-carrierid AND
+      connid = primary_key-connectionid.
+
+  ENDMETHOD.
+
+
+  METHOD flightplanset_get_entity.
+
+    DATA(primary_key) = get_primary_key( it_key_tab ).
 
     SELECT SINGLE * FROM spfli INTO er_entity
       WHERE carrid = primary_key-carrierid
@@ -41,8 +81,80 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
 
 
   METHOD flightplanset_get_entityset.
+    DATA: offset    TYPE i,
+          page_size TYPE i.
 
-    SELECT * FROM spfli INTO TABLE et_entityset.
+    DATA(osql_where_clause) = io_tech_request_context->get_osql_where_clause( ).
+
+    IF io_tech_request_context->get_top( ) IS NOT INITIAL.
+      " deliver a package
+      page_size = CONV i( io_tech_request_context->get_top( ) )
+        - CONV i( io_tech_request_context->get_skip( ) ).
+      offset = io_tech_request_context->get_skip( ).
+      SELECT * FROM spfli WHERE (osql_where_clause)
+        ORDER BY carrid, connid INTO TABLE @et_entityset
+        OFFSET @offset UP TO @page_size ROWS.
+    ELSE.
+      " deliver the result at once
+      SELECT * FROM spfli INTO TABLE et_entityset
+        WHERE (osql_where_clause).
+    ENDIF.
+
+    CLEAR es_response_context-inlinecount.
+    IF io_tech_request_context->has_inlinecount( ) = abap_true.
+      SELECT COUNT(*) FROM spfli
+        WHERE (osql_where_clause).
+      es_response_context-inlinecount = sy-dbcnt.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD flightplanset_update_entity.
+    DATA: flight_plan_entity                 TYPE spfli.
+
+    io_data_provider->read_entry_data( IMPORTING es_data = flight_plan_entity ).
+    verify_primary_key( it_key_tab = it_key_tab flight_plan_entity = flight_plan_entity ).
+
+    UPDATE spfli FROM flight_plan_entity.
+    IF sy-subrc = 0.
+      er_entity = flight_plan_entity.
+    ELSE.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 001 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD get_primary_key.
+
+    LOOP AT it_key_tab REFERENCE INTO DATA(key_value_pair).
+      ASSIGN COMPONENT key_value_pair->*-name
+        OF STRUCTURE result
+        TO FIELD-SYMBOL(<comp>).
+      IF sy-subrc = 0.
+        <comp> = key_value_pair->*-value.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD verify_primary_key.
+
+    DATA(primary_key) = get_primary_key( it_key_tab ).
+
+    IF NOT ( flight_plan_entity-carrid = primary_key-carrierid AND
+      flight_plan_entity-connid = primary_key-connectionid ).
+
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 002 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.

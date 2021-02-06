@@ -10,6 +10,7 @@
     <item>
      <FUNCNAME>ZGET_DEPARTURES_AIRPORT</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Flugplan auf Flughafen bezogen</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>AIRPORT</PARAMETER>
@@ -30,11 +31,13 @@
       <RSFDO>
        <PARAMETER>AIRPORT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flughafen</STEXT>
        <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DATE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Datum Ankunft/Abflug</STEXT>
        <INDEX> 002</INDEX>
       </RSFDO>
       <RSFDO>
