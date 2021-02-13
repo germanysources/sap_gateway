@@ -183,7 +183,7 @@ CLASS ZCL_ZFLIGHT_MODEL2_DPC IMPLEMENTATION.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_CRT_ENTITY_BASE
-*&* This class has been generated on 06.01.2021 16:22:14 in client 001
+*&* This class has been generated on 13.02.2021 13:06:18 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -262,7 +262,7 @@ ENDCASE.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~DELETE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_DEL_ENTITY_BASE
-*&* This class has been generated on 06.01.2021 16:22:14 in client 001
+*&* This class has been generated on 13.02.2021 13:06:18 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -318,7 +318,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY.
 *&-----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_GETENTITY_BASE
-*&* This class has been generated  on 06.01.2021 16:22:14 in client 001
+*&* This class has been generated  on 13.02.2021 13:06:18 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -408,7 +408,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TMP_ENTITYSET_BASE
-*&* This class has been generated on 06.01.2021 16:22:14 in client 001
+*&* This class has been generated on 13.02.2021 13:06:18 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -504,7 +504,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~UPDATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_UPD_ENTITY_BASE
-*&* This class has been generated on 06.01.2021 16:22:14 in client 001
+*&* This class has been generated on 13.02.2021 13:06:18 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -734,8 +734,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
  io_data_provider->read_entry_data( IMPORTING es_data = ls_request_input_data ).
 
 * Map request input fields to function module parameters
- bookingnumber = ls_request_input_data-bookingid.
  airlineid = ls_request_input_data-airlineid.
+ bookingnumber = ls_request_input_data-bookingid.
 
 * Get RFC destination
  lo_dp_facade = /iwbep/if_mgw_conv_srv_runtime~get_dp_facade( ).
@@ -751,8 +751,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
    TRY.
        CALL FUNCTION lv_rfc_name
          EXPORTING
-           bookingnumber  = bookingnumber
            airlineid      = airlineid
+           bookingnumber  = bookingnumber
          TABLES
            return         = return
          EXCEPTIONS
@@ -770,8 +770,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
    CALL FUNCTION lv_rfc_name DESTINATION lv_destination
      EXPORTING
-       bookingnumber         = bookingnumber
        airlineid             = airlineid
+       bookingnumber         = bookingnumber
      TABLES
        return                = return
      EXCEPTIONS
@@ -817,14 +817,14 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
 * Create key table for the read operation
 
- ls_key-name = 'BOOKINGID'.
- ls_key-value = bookingnumber.
+ ls_key-name = 'AIRLINEID'.
+ ls_key-value = airlineid.
  IF ls_key-value IS NOT INITIAL.
    APPEND ls_key TO lt_keys.
  ENDIF.
 
- ls_key-name = 'AIRLINEID'.
- ls_key-value = airlineid.
+ ls_key-name = 'BOOKINGID'.
+ ls_key-value = bookingnumber.
  IF ls_key-value IS NOT INITIAL.
    APPEND ls_key TO lt_keys.
  ENDIF.
@@ -938,10 +938,10 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
  DATA ls_converted_keys LIKE LINE OF et_entityset.
  DATA ls_filter TYPE /iwbep/s_mgw_select_option.
  DATA ls_filter_range TYPE /iwbep/s_cod_select_option.
- DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
- DATA ls_airport LIKE LINE OF lr_airport.
  DATA lr_date LIKE RANGE OF ls_converted_keys-date.
  DATA ls_date LIKE LINE OF lr_date.
+ DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
+ DATA ls_airport LIKE LINE OF lr_airport.
  DATA lo_dp_facade TYPE REF TO /iwbep/if_mgw_dp_facade.
  DATA ls_gw_departures LIKE LINE OF et_entityset.
  DATA lv_skip     TYPE int4.
@@ -988,17 +988,6 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
    LOOP AT ls_filter-select_options INTO ls_filter_range.
      CASE ls_filter-property.
-       WHEN 'AIRPORT'.
-         lo_filter->convert_select_option(
-           EXPORTING
-             is_select_option = ls_filter
-           IMPORTING
-             et_select_option = lr_airport ).
-
-         READ TABLE lr_airport INTO ls_airport INDEX 1.
-         IF sy-subrc = 0.
-           airport = ls_airport-low.
-         ENDIF.
        WHEN 'DATE'.
          lo_filter->convert_select_option(
            EXPORTING
@@ -1009,6 +998,17 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
          READ TABLE lr_date INTO ls_date INDEX 1.
          IF sy-subrc = 0.
            date = ls_date-low.
+         ENDIF.
+       WHEN 'AIRPORT'.
+         lo_filter->convert_select_option(
+           EXPORTING
+             is_select_option = ls_filter
+           IMPORTING
+             et_select_option = lr_airport ).
+
+         READ TABLE lr_airport INTO ls_airport INDEX 1.
+         IF sy-subrc = 0.
+           airport = ls_airport-low.
          ENDIF.
        WHEN OTHERS.
          " Log message in the application log
@@ -1041,8 +1041,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
    TRY.
        CALL FUNCTION lv_rfc_name
          EXPORTING
-           airport        = airport
            date           = date
+           airport        = airport
          IMPORTING
            departures     = departures
          EXCEPTIONS
@@ -1060,8 +1060,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
    CALL FUNCTION lv_rfc_name DESTINATION lv_destination
      EXPORTING
-       airport               = airport
        date                  = date
+       airport               = airport
      IMPORTING
        departures            = departures
      EXCEPTIONS
@@ -1115,23 +1115,23 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 *  Provide the response entries according to the Top and Skip parameters that were provided at runtime
       FROM lv_skip TO lv_top.
 *  Only fields that were mapped will be delivered to the response table
-   ls_gw_departures-carrid = ls_departures-carrid.
-   ls_gw_departures-connid = ls_departures-connid.
-   ls_gw_departures-countryfr = ls_departures-countryfr.
-   ls_gw_departures-cityfrom = ls_departures-cityfrom.
-   ls_gw_departures-airpfrom = ls_departures-airpfrom.
-   ls_gw_departures-countryto = ls_departures-countryto.
-   ls_gw_departures-cityto = ls_departures-cityto.
-   ls_gw_departures-airpto = ls_departures-airpto.
-   ls_gw_departures-fltime = ls_departures-fltime.
-   ls_gw_departures-deptime = ls_departures-deptime.
-   ls_gw_departures-arrtime = ls_departures-arrtime.
-   ls_gw_departures-distance = ls_departures-distance.
-   ls_gw_departures-distid = ls_departures-distid.
-   ls_gw_departures-fltype = ls_departures-fltype.
-   ls_gw_departures-period = ls_departures-period.
-   ls_gw_departures-airport = ls_departures-airport.
    ls_gw_departures-date = ls_departures-date.
+   ls_gw_departures-airport = ls_departures-airport.
+   ls_gw_departures-period = ls_departures-period.
+   ls_gw_departures-fltype = ls_departures-fltype.
+   ls_gw_departures-distid = ls_departures-distid.
+   ls_gw_departures-distance = ls_departures-distance.
+   ls_gw_departures-arrtime = ls_departures-arrtime.
+   ls_gw_departures-deptime = ls_departures-deptime.
+   ls_gw_departures-fltime = ls_departures-fltime.
+   ls_gw_departures-airpto = ls_departures-airpto.
+   ls_gw_departures-cityto = ls_departures-cityto.
+   ls_gw_departures-countryto = ls_departures-countryto.
+   ls_gw_departures-airpfrom = ls_departures-airpfrom.
+   ls_gw_departures-cityfrom = ls_departures-cityfrom.
+   ls_gw_departures-countryfr = ls_departures-countryfr.
+   ls_gw_departures-connid = ls_departures-connid.
+   ls_gw_departures-carrid = ls_departures-carrid.
    APPEND ls_gw_departures TO et_entityset.
    CLEAR ls_gw_departures.
  ENDLOOP.
