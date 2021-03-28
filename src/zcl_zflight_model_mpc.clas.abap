@@ -145,7 +145,7 @@ lo_property->set_creatable( abap_false ).
 lo_property->set_updatable( abap_false ).
 lo_property->set_sortable( abap_false ).
 lo_property->set_nullable( abap_false ).
-lo_property->set_filterable( abap_false ).
+lo_property->set_filterable( abap_true ).
 lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
       EXPORTING
         iv_key      = 'unicode'
@@ -269,8 +269,7 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 
-lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI'
-                                ). "#EC NOTEXT
+lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI' ).
 
 
 ***********************************************************************************************************************************
@@ -286,7 +285,7 @@ lo_entity_set->set_pageable( abap_false ).
 lo_entity_set->set_addressable( abap_true ).
 lo_entity_set->set_has_ftxt_search( abap_false ).
 lo_entity_set->set_subscribable( abap_false ).
-lo_entity_set->set_filter_required( abap_false ).
+lo_entity_set->set_filter_required( abap_true ).
   endmethod.
 
 
@@ -300,7 +299,7 @@ lo_entity_set->set_filter_required( abap_false ).
 *&---------------------------------------------------------------------*
 
 
-  CONSTANTS: lc_gen_date_time TYPE timestamp VALUE '20201122084649'.                  "#EC NOTEXT
+  CONSTANTS: lc_gen_date_time TYPE timestamp VALUE '20210328183528'.                  "#EC NOTEXT
   rv_last_modified = super->get_last_modified( ).
   IF rv_last_modified LT lc_gen_date_time.
     rv_last_modified = lc_gen_date_time.

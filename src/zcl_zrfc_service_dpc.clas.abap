@@ -96,6 +96,79 @@ protected section.
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
+  methods FLIGHTSSET_CREATE_ENTITY
+    importing
+      !IV_ENTITY_NAME type STRING
+      !IV_ENTITY_SET_NAME type STRING
+      !IV_SOURCE_NAME type STRING
+      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
+      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_C optional
+      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
+      !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
+    exporting
+      !ER_ENTITY type ZCL_ZRFC_SERVICE_MPC=>TS_FLIGHTS
+    raising
+      /IWBEP/CX_MGW_BUSI_EXCEPTION
+      /IWBEP/CX_MGW_TECH_EXCEPTION .
+  methods FLIGHTSSET_DELETE_ENTITY
+    importing
+      !IV_ENTITY_NAME type STRING
+      !IV_ENTITY_SET_NAME type STRING
+      !IV_SOURCE_NAME type STRING
+      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
+      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_D optional
+      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
+    raising
+      /IWBEP/CX_MGW_BUSI_EXCEPTION
+      /IWBEP/CX_MGW_TECH_EXCEPTION .
+  methods FLIGHTSSET_GET_ENTITY
+    importing
+      !IV_ENTITY_NAME type STRING
+      !IV_ENTITY_SET_NAME type STRING
+      !IV_SOURCE_NAME type STRING
+      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
+      !IO_REQUEST_OBJECT type ref to /IWBEP/IF_MGW_REQ_ENTITY optional
+      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY optional
+      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
+    exporting
+      !ER_ENTITY type ZCL_ZRFC_SERVICE_MPC=>TS_FLIGHTS
+      !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_ENTITY_CNTXT
+    raising
+      /IWBEP/CX_MGW_BUSI_EXCEPTION
+      /IWBEP/CX_MGW_TECH_EXCEPTION .
+  methods FLIGHTSSET_GET_ENTITYSET
+    importing
+      !IV_ENTITY_NAME type STRING
+      !IV_ENTITY_SET_NAME type STRING
+      !IV_SOURCE_NAME type STRING
+      !IT_FILTER_SELECT_OPTIONS type /IWBEP/T_MGW_SELECT_OPTION
+      !IS_PAGING type /IWBEP/S_MGW_PAGING
+      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
+      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
+      !IT_ORDER type /IWBEP/T_MGW_SORTING_ORDER
+      !IV_FILTER_STRING type STRING
+      !IV_SEARCH_STRING type STRING
+      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITYSET optional
+    exporting
+      !ET_ENTITYSET type ZCL_ZRFC_SERVICE_MPC=>TT_FLIGHTS
+      !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_CONTEXT
+    raising
+      /IWBEP/CX_MGW_BUSI_EXCEPTION
+      /IWBEP/CX_MGW_TECH_EXCEPTION .
+  methods FLIGHTSSET_UPDATE_ENTITY
+    importing
+      !IV_ENTITY_NAME type STRING
+      !IV_ENTITY_SET_NAME type STRING
+      !IV_SOURCE_NAME type STRING
+      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
+      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_U optional
+      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
+      !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
+    exporting
+      !ER_ENTITY type ZCL_ZRFC_SERVICE_MPC=>TS_FLIGHTS
+    raising
+      /IWBEP/CX_MGW_BUSI_EXCEPTION
+      /IWBEP/CX_MGW_TECH_EXCEPTION .
 
   methods CHECK_SUBSCRIPTION_AUTHORITY
     redefinition .
@@ -110,7 +183,7 @@ CLASS ZCL_ZRFC_SERVICE_DPC IMPLEMENTATION.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_CRT_ENTITY_BASE
-*&* This class has been generated on 01.11.2020 16:14:50 in client 001
+*&* This class has been generated on 20.03.2021 09:20:28 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -118,6 +191,7 @@ CLASS ZCL_ZRFC_SERVICE_DPC IMPLEMENTATION.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA departuresset_create_entity TYPE zcl_zrfc_service_mpc=>ts_departures.
+ DATA flightsset_create_entity TYPE zcl_zrfc_service_mpc=>ts_flights.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
@@ -146,6 +220,29 @@ CASE lv_entityset_name.
         cr_data = er_entity
    ).
 
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightsSet
+*-------------------------------------------------------------------------*
+     WHEN 'FlightsSet'.
+*     Call the entity set generated method
+    flightsset_create_entity(
+         EXPORTING iv_entity_name     = iv_entity_name
+                   iv_entity_set_name = iv_entity_set_name
+                   iv_source_name     = iv_source_name
+                   io_data_provider   = io_data_provider
+                   it_key_tab         = it_key_tab
+                   it_navigation_path = it_navigation_path
+                   io_tech_request_context = io_tech_request_context
+       	 IMPORTING er_entity          = flightsset_create_entity
+    ).
+*     Send specific entity data to the caller interfaces
+    copy_data_to_ref(
+      EXPORTING
+        is_data = flightsset_create_entity
+      CHANGING
+        cr_data = er_entity
+   ).
+
   when others.
     super->/iwbep/if_mgw_appl_srv_runtime~create_entity(
        EXPORTING
@@ -165,7 +262,7 @@ ENDCASE.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~DELETE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_DEL_ENTITY_BASE
-*&* This class has been generated on 01.11.2020 16:14:50 in client 001
+*&* This class has been generated on 20.03.2021 09:20:28 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -191,6 +288,20 @@ CASE lv_entityset_name.
                     io_tech_request_context = io_tech_request_context
      ).
 
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightsSet
+*-------------------------------------------------------------------------*
+      when 'FlightsSet'.
+*     Call the entity set generated method
+     flightsset_delete_entity(
+          EXPORTING iv_entity_name     = iv_entity_name
+                    iv_entity_set_name = iv_entity_set_name
+                    iv_source_name     = iv_source_name
+                    it_key_tab         = it_key_tab
+                    it_navigation_path = it_navigation_path
+                    io_tech_request_context = io_tech_request_context
+     ).
+
    when others.
      super->/iwbep/if_mgw_appl_srv_runtime~delete_entity(
         EXPORTING
@@ -207,7 +318,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY.
 *&-----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_GETENTITY_BASE
-*&* This class has been generated  on 01.11.2020 16:14:50 in client 001
+*&* This class has been generated  on 20.03.2021 09:20:28 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -215,6 +326,7 @@ CASE lv_entityset_name.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA departuresset_get_entity TYPE zcl_zrfc_service_mpc=>ts_departures.
+ DATA flightsset_get_entity TYPE zcl_zrfc_service_mpc=>ts_flights.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data.       "#EC NEEDED
 
@@ -249,6 +361,34 @@ CASE lv_entityset_name.
 *         In case of initial values - unbind the entity reference
           er_entity = lr_entity.
         ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightsSet
+*-------------------------------------------------------------------------*
+      WHEN 'FlightsSet'.
+*     Call the entity set generated method
+          flightsset_get_entity(
+               EXPORTING iv_entity_name     = iv_entity_name
+                         iv_entity_set_name = iv_entity_set_name
+                         iv_source_name     = iv_source_name
+                         it_key_tab         = it_key_tab
+                         it_navigation_path = it_navigation_path
+                         io_tech_request_context = io_tech_request_context
+             	 IMPORTING er_entity          = flightsset_get_entity
+                         es_response_context = es_response_context
+          ).
+
+        IF flightsset_get_entity IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = flightsset_get_entity
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
 
       WHEN OTHERS.
         super->/iwbep/if_mgw_appl_srv_runtime~get_entity(
@@ -268,13 +408,14 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TMP_ENTITYSET_BASE
-*&* This class has been generated on 01.11.2020 16:14:50 in client 001
+*&* This class has been generated on 20.03.2021 09:20:28 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
 *&*   generated methods inside the DPC provider subclass - ZCL_ZRFC_SERVICE_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
  DATA departuresset_get_entityset TYPE zcl_zrfc_service_mpc=>tt_departures.
+ DATA flightsset_get_entityset TYPE zcl_zrfc_service_mpc=>tt_flights.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
@@ -310,6 +451,36 @@ CASE lv_entityset_name.
           cr_data = er_entityset
       ).
 
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightsSet
+*-------------------------------------------------------------------------*
+   WHEN 'FlightsSet'.
+*     Call the entity set generated method
+      flightsset_get_entityset(
+        EXPORTING
+         iv_entity_name = iv_entity_name
+         iv_entity_set_name = iv_entity_set_name
+         iv_source_name = iv_source_name
+         it_filter_select_options = it_filter_select_options
+         it_order = it_order
+         is_paging = is_paging
+         it_navigation_path = it_navigation_path
+         it_key_tab = it_key_tab
+         iv_filter_string = iv_filter_string
+         iv_search_string = iv_search_string
+         io_tech_request_context = io_tech_request_context
+       IMPORTING
+         et_entityset = flightsset_get_entityset
+         es_response_context = es_response_context
+       ).
+*     Send specific entity data to the caller interface
+      copy_data_to_ref(
+        EXPORTING
+          is_data = flightsset_get_entityset
+        CHANGING
+          cr_data = er_entityset
+      ).
+
     WHEN OTHERS.
       super->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
         EXPORTING
@@ -333,7 +504,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~UPDATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_UPD_ENTITY_BASE
-*&* This class has been generated on 01.11.2020 16:14:50 in client 001
+*&* This class has been generated on 20.03.2021 09:20:28 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -341,6 +512,7 @@ CASE lv_entityset_name.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA departuresset_update_entity TYPE zcl_zrfc_service_mpc=>ts_departures.
+ DATA flightsset_update_entity TYPE zcl_zrfc_service_mpc=>ts_flights.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data. "#EC NEEDED
 
@@ -367,6 +539,33 @@ CASE lv_entityset_name.
           copy_data_to_ref(
             EXPORTING
               is_data = departuresset_update_entity
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightsSet
+*-------------------------------------------------------------------------*
+      WHEN 'FlightsSet'.
+*     Call the entity set generated method
+          flightsset_update_entity(
+               EXPORTING iv_entity_name     = iv_entity_name
+                         iv_entity_set_name = iv_entity_set_name
+                         iv_source_name     = iv_source_name
+                         io_data_provider   = io_data_provider
+                         it_key_tab         = it_key_tab
+                         it_navigation_path = it_navigation_path
+                         io_tech_request_context = io_tech_request_context
+             	 IMPORTING er_entity          = flightsset_update_entity
+          ).
+       IF flightsset_update_entity IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = flightsset_update_entity
             CHANGING
               cr_data = er_entity
           ).
@@ -526,14 +725,6 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
 
   method DEPARTURESSET_GET_ENTITY.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'DEPARTURESSET_GET_ENTITY'.
-  endmethod.
-
-
-  method DEPARTURESSET_GET_ENTITYSET.
 *-------------------------------------------------------------
 * Datendeklaration
 *-------------------------------------------------------------
@@ -546,21 +737,9 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
  DATA lv_subrc TYPE syst-subrc.
  DATA lv_exc_msg TYPE /iwbep/mgw_bop_rfc_excep_text.
  DATA lx_root TYPE REF TO cx_root.
- DATA lo_filter TYPE  REF TO /iwbep/if_mgw_req_filter.
- DATA lt_filter_select_options TYPE /iwbep/t_mgw_select_option.
- DATA lv_filter_str TYPE string.
- DATA ls_paging TYPE /iwbep/s_mgw_paging.
- DATA ls_converted_keys LIKE LINE OF et_entityset.
- DATA ls_filter TYPE /iwbep/s_mgw_select_option.
- DATA ls_filter_range TYPE /iwbep/s_cod_select_option.
- DATA lr_date LIKE RANGE OF ls_converted_keys-date.
- DATA ls_date LIKE LINE OF lr_date.
- DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
- DATA ls_airport LIKE LINE OF lr_airport.
+ DATA ls_converted_keys LIKE er_entity.
+ DATA lv_source_entity_set_name TYPE string.
  DATA lo_dp_facade TYPE REF TO /iwbep/if_mgw_dp_facade.
- DATA ls_gw_departures LIKE LINE OF et_entityset.
- DATA lv_skip     TYPE int4.
- DATA lv_top      TYPE int4.
 
 *-------------------------------------------------------------
 * Zuordnung Eingabedaten zu RFC - nur zugeordnete Attribute
@@ -568,80 +747,25 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 * Get all input information from the technical request context object
 * Since DPC works with internal property names and runtime API interface holds external property names
 * the process needs to get the all needed input information from the technical request context object
-* Get filter or select option information
- lo_filter = io_tech_request_context->get_filter( ).
- lt_filter_select_options = lo_filter->get_filter_select_options( ).
- lv_filter_str = lo_filter->get_filter_string( ).
+* Get key table information - for direct call
+ io_tech_request_context->get_converted_keys(
+   IMPORTING
+     es_key_values = ls_converted_keys ).
 
-* Check if the supplied filter is supported by standard gateway runtime process
- IF  lv_filter_str            IS NOT INITIAL
- AND lt_filter_select_options IS INITIAL.
-   " If the string of the Filter System Query Option is not automatically converted into
-   " filter option table (lt_filter_select_options), then the filtering combination is not supported
-   " Log message in the application log
-   me->/iwbep/if_sb_dpc_comm_services~log_message(
-     EXPORTING
-       iv_msg_type   = 'E'
-       iv_msg_id     = '/IWBEP/MC_SB_DPC_ADM'
-       iv_msg_number = 025 ).
-   " Raise Exception
-   RAISE EXCEPTION TYPE /iwbep/cx_mgw_tech_exception
-     EXPORTING
-       textid = /iwbep/cx_mgw_tech_exception=>internal_error.
+* Maps key fields to function module parameters
+
+ lv_source_entity_set_name = io_tech_request_context->get_source_entity_set_name( ).
+
+ IF lv_source_entity_set_name = 'DeparturesSet' AND
+    lv_source_entity_set_name NE io_tech_request_context->get_entity_set_name( ).
+
+   io_tech_request_context->get_converted_source_keys(
+   IMPORTING es_key_values = ls_converted_keys ).
+
  ENDIF.
 
-* Get key table information
- io_tech_request_context->get_converted_source_keys(
-   IMPORTING
-     es_key_values  = ls_converted_keys ).
-
- ls_paging-top = io_tech_request_context->get_top( ).
- ls_paging-skip = io_tech_request_context->get_skip( ).
-
-* Maps filter table lines to function module parameters
- LOOP AT lt_filter_select_options INTO ls_filter.
-
-   LOOP AT ls_filter-select_options INTO ls_filter_range.
-     CASE ls_filter-property.
-       WHEN 'DATE'.
-         lo_filter->convert_select_option(
-           EXPORTING
-             is_select_option = ls_filter
-           IMPORTING
-             et_select_option = lr_date ).
-
-         READ TABLE lr_date INTO ls_date INDEX 1.
-         IF sy-subrc = 0.
-           date = ls_date-low.
-         ENDIF.
-       WHEN 'AIRPORT'.
-         lo_filter->convert_select_option(
-           EXPORTING
-             is_select_option = ls_filter
-           IMPORTING
-             et_select_option = lr_airport ).
-
-         READ TABLE lr_airport INTO ls_airport INDEX 1.
-         IF sy-subrc = 0.
-           airport = ls_airport-low.
-         ENDIF.
-       WHEN OTHERS.
-         " Log message in the application log
-         me->/iwbep/if_sb_dpc_comm_services~log_message(
-           EXPORTING
-             iv_msg_type   = 'E'
-             iv_msg_id     = '/IWBEP/MC_SB_DPC_ADM'
-             iv_msg_number = 020
-             iv_msg_v1     = ls_filter-property ).
-         " Raise Exception
-         RAISE EXCEPTION TYPE /iwbep/cx_mgw_tech_exception
-           EXPORTING
-             textid = /iwbep/cx_mgw_tech_exception=>internal_error.
-     ENDCASE.
-   ENDLOOP.
-
- ENDLOOP.
-
+ airport = ls_converted_keys-airport.
+ date = ls_converted_keys-date.
 * Get RFC destination
  lo_dp_facade = /iwbep/if_mgw_conv_srv_runtime~get_dp_facade( ).
  lv_destination = /iwbep/cl_sb_gen_dpc_rt_util=>get_rfc_destination( io_dp_facade = lo_dp_facade ).
@@ -656,8 +780,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
    TRY.
        CALL FUNCTION lv_rfc_name
          EXPORTING
-           date           = date
            airport        = airport
+           date           = date
          IMPORTING
            departures     = departures
          EXCEPTIONS
@@ -675,8 +799,8 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
    CALL FUNCTION lv_rfc_name DESTINATION lv_destination
      EXPORTING
-       date                  = date
        airport               = airport
+       date                  = date
      IMPORTING
        departures            = departures
      EXCEPTIONS
@@ -705,52 +829,37 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 *-------------------------------------------------------------------------*
 *             - Post Backend Call -
 *-------------------------------------------------------------------------*
- IF ls_paging-skip IS NOT INITIAL.
-*  If the Skip value was requested at runtime
-*  the response table will provide backend entries from skip + 1, meaning start from skip +1
-*  for example: skip=5 means to start get results from the 6th row
-   lv_skip = ls_paging-skip + 1.
- ENDIF.
-*  The Top value was requested at runtime but was not handled as part of the function interface
- IF  ls_paging-top <> 0
- AND lv_skip IS NOT INITIAL.
-*  if lv_skip > 0 retrieve the entries from lv_skip + Top - 1
-*  for example: skip=5 and top=2 means to start get results from the 6th row and end in row number 7
-   lv_top = ls_paging-top + lv_skip - 1.
- ELSEIF ls_paging-top <> 0
- AND    lv_skip IS INITIAL.
-   lv_top = ls_paging-top.
- ELSE.
-   lv_top = lines( departures ).
- ENDIF.
+* Map properties from the backend to the Gateway output response structure
 
-*  - Map properties from the backend to the Gateway output response table -
 
- LOOP AT departures INTO ls_departures
-*  Provide the response entries according to the Top and Skip parameters that were provided at runtime
-      FROM lv_skip TO lv_top.
-*  Only fields that were mapped will be delivered to the response table
-   ls_gw_departures-period = ls_departures-period.
-   ls_gw_departures-fltype = ls_departures-fltype.
-   ls_gw_departures-distid = ls_departures-distid.
-   ls_gw_departures-distance = ls_departures-distance.
-   ls_gw_departures-arrtime = ls_departures-arrtime.
-   ls_gw_departures-deptime = ls_departures-deptime.
-   ls_gw_departures-fltime = ls_departures-fltime.
-   ls_gw_departures-airpto = ls_departures-airpto.
-   ls_gw_departures-cityto = ls_departures-cityto.
-   ls_gw_departures-countryto = ls_departures-countryto.
-   ls_gw_departures-airpfrom = ls_departures-airpfrom.
-   ls_gw_departures-cityfrom = ls_departures-cityfrom.
-   ls_gw_departures-countryfr = ls_departures-countryfr.
-   ls_gw_departures-connid = ls_departures-connid.
-   ls_gw_departures-carrid = ls_departures-carrid.
-   ls_gw_departures-airport = ls_departures-airport.
-   ls_gw_departures-date = ls_departures-date.
-   APPEND ls_gw_departures TO et_entityset.
-   CLEAR ls_gw_departures.
- ENDLOOP.
+* In GetEntity operation we support only read for the first entry in the response table
 
+ READ TABLE departures INTO ls_departures INDEX 1.
+ er_entity-carrid = ls_departures-carrid.
+ er_entity-connid = ls_departures-connid.
+ er_entity-countryfr = ls_departures-countryfr.
+ er_entity-cityfrom = ls_departures-cityfrom.
+ er_entity-airpfrom = ls_departures-airpfrom.
+ er_entity-countryto = ls_departures-countryto.
+ er_entity-cityto = ls_departures-cityto.
+ er_entity-airpto = ls_departures-airpto.
+ er_entity-fltime = ls_departures-fltime.
+ er_entity-deptime = ls_departures-deptime.
+ er_entity-arrtime = ls_departures-arrtime.
+ er_entity-distance = ls_departures-distance.
+ er_entity-distid = ls_departures-distid.
+ er_entity-fltype = ls_departures-fltype.
+ er_entity-period = ls_departures-period.
+ er_entity-date = ls_departures-date.
+ er_entity-airport = ls_departures-airport.
+  endmethod.
+
+
+  method DEPARTURESSET_GET_ENTITYSET.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'DEPARTURESSET_GET_ENTITYSET'.
   endmethod.
 
 
@@ -759,5 +868,45 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
       method = 'DEPARTURESSET_UPDATE_ENTITY'.
+  endmethod.
+
+
+  method FLIGHTSSET_CREATE_ENTITY.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'FLIGHTSSET_CREATE_ENTITY'.
+  endmethod.
+
+
+  method FLIGHTSSET_DELETE_ENTITY.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'FLIGHTSSET_DELETE_ENTITY'.
+  endmethod.
+
+
+  method FLIGHTSSET_GET_ENTITY.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'FLIGHTSSET_GET_ENTITY'.
+  endmethod.
+
+
+  method FLIGHTSSET_GET_ENTITYSET.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'FLIGHTSSET_GET_ENTITYSET'.
+  endmethod.
+
+
+  method FLIGHTSSET_UPDATE_ENTITY.
+  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
+    EXPORTING
+      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+      method = 'FLIGHTSSET_UPDATE_ENTITY'.
   endmethod.
 ENDCLASS.
