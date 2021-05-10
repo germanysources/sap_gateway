@@ -16,6 +16,12 @@ CLASS zcl_zflight_model_dpc_ext DEFINITION
 
     METHODS flightplanset_delete_entity REDEFINITION.
 
+    METHODS flightplansyncse_get_entity REDEFINITION.
+
+    METHODS flightplansyncse_get_entityset REDEFINITION.
+
+    METHODS flightplansyncse_update_entity REDEFINITION.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF _primary_key,
              carrierid    TYPE s_carr_id,
@@ -125,6 +131,88 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
           textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 001 )
           http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD flightplansyncse_get_entity.
+
+    DATA(primary_key) = get_primary_key( it_key_tab ).
+
+    SELECT SINGLE * FROM zspfli
+      INTO CORRESPONDING FIELDS OF @er_entity
+      WHERE carrid = @primary_key-carrierid
+      AND connid = @primary_key-connectionid.
+
+  ENDMETHOD.
+
+
+  METHOD flightplansyncse_get_entityset.
+    DATA: offset    TYPE i,
+          page_size TYPE i.
+
+    DATA(osql_where_clause) = io_tech_request_context->get_osql_where_clause( ).
+
+    IF io_tech_request_context->get_top( ) IS NOT INITIAL.
+      " deliver a package
+      page_size = CONV i( io_tech_request_context->get_top( ) )
+        - CONV i( io_tech_request_context->get_skip( ) ).
+      offset = io_tech_request_context->get_skip( ).
+      SELECT * FROM zspfli WHERE (osql_where_clause)
+        ORDER BY carrid, connid
+        INTO CORRESPONDING FIELDS OF TABLE @et_entityset
+        OFFSET @offset UP TO @page_size ROWS.
+    ELSE.
+      " deliver the result at once
+      SELECT * FROM zspfli
+        INTO CORRESPONDING FIELDS OF TABLE @et_entityset
+        WHERE (osql_where_clause).
+    ENDIF.
+
+    CLEAR es_response_context-inlinecount.
+    IF io_tech_request_context->has_inlinecount( ) = abap_true.
+      SELECT COUNT(*) FROM zspfli
+        WHERE (osql_where_clause).
+      es_response_context-inlinecount = sy-dbcnt.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD flightplansyncse_update_entity.
+    DATA: flight_plan_entity TYPE zspfliv,
+          flight_plan_db_entity TYPE spfli,
+          flight_plan_changes TYPE zspfli_changes.
+
+    io_data_provider->read_entry_data( IMPORTING es_data = flight_plan_entity ).
+    ##ENH_OK
+    MOVE-CORRESPONDING flight_plan_entity TO flight_plan_db_entity.
+    ##ENH_OK
+    MOVE-CORRESPONDING flight_plan_entity TO flight_plan_changes.
+    verify_primary_key( it_key_tab = it_key_tab flight_plan_entity = flight_plan_db_entity ).
+
+    SELECT COUNT(*) FROM zspfli_changes
+      WHERE carrid = flight_plan_entity-carrid AND connid = flight_plan_entity-connid
+      AND last_change > flight_plan_entity-last_change.
+    IF sy-subrc = 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 002 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
+
+    UPDATE spfli FROM flight_plan_db_entity.
+    IF sy-subrc = 0.
+      er_entity = flight_plan_entity.
+    ELSE.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 001 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
+
+    GET TIME STAMP FIELD flight_plan_changes-last_change.
+    MODIFY zspfli_changes FROM flight_plan_changes.
 
   ENDMETHOD.
 

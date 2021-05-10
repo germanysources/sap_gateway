@@ -28,6 +28,11 @@
      <MSGNR>001</MSGNR>
      <TEXT>Flug existiert noch nicht.</TEXT>
     </item>
+    <item>
+     <SPRSL>D</SPRSL>
+     <MSGNR>002</MSGNR>
+     <TEXT>FLug wurde in der Zwischenzeit geändert. Bitte aktualisieren.</TEXT>
+    </item>
    </T100_TEXTS>
   </asx:values>
  </asx:abap>

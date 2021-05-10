@@ -1,4 +1,4 @@
-class ZCL_ZFLIGHT_MODEL_DPC definition
+class ZCL_ZFLIGHT_MODEL3_DPC definition
   public
   inheriting from /IWBEP/CL_MGW_PUSH_ABS_DATA
   abstract
@@ -23,7 +23,7 @@ protected section.
 
   data mo_injection type ref to /IWBEP/IF_SB_GEN_DPC_INJECTION .
 
-  methods FLIGHTPLANSET_CREATE_ENTITY
+  methods FLIGHTSCHEDULESE_CREATE_ENTITY
     importing
       !IV_ENTITY_NAME type STRING
       !IV_ENTITY_SET_NAME type STRING
@@ -33,11 +33,11 @@ protected section.
       !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
       !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
     exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLAN
+      !ER_ENTITY type ZCL_ZFLIGHT_MODEL3_MPC=>TS_FLIGHTSCHEDULE
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSET_DELETE_ENTITY
+  methods FLIGHTSCHEDULESE_DELETE_ENTITY
     importing
       !IV_ENTITY_NAME type STRING
       !IV_ENTITY_SET_NAME type STRING
@@ -48,7 +48,7 @@ protected section.
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSET_GET_ENTITY
+  methods FLIGHTSCHEDULESE_GET_ENTITY
     importing
       !IV_ENTITY_NAME type STRING
       !IV_ENTITY_SET_NAME type STRING
@@ -58,12 +58,12 @@ protected section.
       !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY optional
       !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
     exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLAN
+      !ER_ENTITY type ZCL_ZFLIGHT_MODEL3_MPC=>TS_FLIGHTSCHEDULE
       !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_ENTITY_CNTXT
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSET_GET_ENTITYSET
+  methods FLIGHTSCHEDULESE_GET_ENTITYSET
     importing
       !IV_ENTITY_NAME type STRING
       !IV_ENTITY_SET_NAME type STRING
@@ -77,12 +77,12 @@ protected section.
       !IV_SEARCH_STRING type STRING
       !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITYSET optional
     exporting
-      !ET_ENTITYSET type ZCL_ZFLIGHT_MODEL_MPC=>TT_FLIGHTPLAN
+      !ET_ENTITYSET type ZCL_ZFLIGHT_MODEL3_MPC=>TT_FLIGHTSCHEDULE
       !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_CONTEXT
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSET_UPDATE_ENTITY
+  methods FLIGHTSCHEDULESE_UPDATE_ENTITY
     importing
       !IV_ENTITY_NAME type STRING
       !IV_ENTITY_SET_NAME type STRING
@@ -92,80 +92,7 @@ protected section.
       !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
       !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
     exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLAN
-    raising
-      /IWBEP/CX_MGW_BUSI_EXCEPTION
-      /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSYNCSE_CREATE_ENTITY
-    importing
-      !IV_ENTITY_NAME type STRING
-      !IV_ENTITY_SET_NAME type STRING
-      !IV_SOURCE_NAME type STRING
-      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
-      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_C optional
-      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
-      !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
-    exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLANSYNC
-    raising
-      /IWBEP/CX_MGW_BUSI_EXCEPTION
-      /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSYNCSE_DELETE_ENTITY
-    importing
-      !IV_ENTITY_NAME type STRING
-      !IV_ENTITY_SET_NAME type STRING
-      !IV_SOURCE_NAME type STRING
-      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
-      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_D optional
-      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
-    raising
-      /IWBEP/CX_MGW_BUSI_EXCEPTION
-      /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSYNCSE_GET_ENTITY
-    importing
-      !IV_ENTITY_NAME type STRING
-      !IV_ENTITY_SET_NAME type STRING
-      !IV_SOURCE_NAME type STRING
-      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
-      !IO_REQUEST_OBJECT type ref to /IWBEP/IF_MGW_REQ_ENTITY optional
-      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY optional
-      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
-    exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLANSYNC
-      !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_ENTITY_CNTXT
-    raising
-      /IWBEP/CX_MGW_BUSI_EXCEPTION
-      /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSYNCSE_GET_ENTITYSET
-    importing
-      !IV_ENTITY_NAME type STRING
-      !IV_ENTITY_SET_NAME type STRING
-      !IV_SOURCE_NAME type STRING
-      !IT_FILTER_SELECT_OPTIONS type /IWBEP/T_MGW_SELECT_OPTION
-      !IS_PAGING type /IWBEP/S_MGW_PAGING
-      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
-      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
-      !IT_ORDER type /IWBEP/T_MGW_SORTING_ORDER
-      !IV_FILTER_STRING type STRING
-      !IV_SEARCH_STRING type STRING
-      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITYSET optional
-    exporting
-      !ET_ENTITYSET type ZCL_ZFLIGHT_MODEL_MPC=>TT_FLIGHTPLANSYNC
-      !ES_RESPONSE_CONTEXT type /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_CONTEXT
-    raising
-      /IWBEP/CX_MGW_BUSI_EXCEPTION
-      /IWBEP/CX_MGW_TECH_EXCEPTION .
-  methods FLIGHTPLANSYNCSE_UPDATE_ENTITY
-    importing
-      !IV_ENTITY_NAME type STRING
-      !IV_ENTITY_SET_NAME type STRING
-      !IV_SOURCE_NAME type STRING
-      !IT_KEY_TAB type /IWBEP/T_MGW_NAME_VALUE_PAIR
-      !IO_TECH_REQUEST_CONTEXT type ref to /IWBEP/IF_MGW_REQ_ENTITY_U optional
-      !IT_NAVIGATION_PATH type /IWBEP/T_MGW_NAVIGATION_PATH
-      !IO_DATA_PROVIDER type ref to /IWBEP/IF_MGW_ENTRY_PROVIDER optional
-    exporting
-      !ER_ENTITY type ZCL_ZFLIGHT_MODEL_MPC=>TS_FLIGHTPLANSYNC
+      !ER_ENTITY type ZCL_ZFLIGHT_MODEL3_MPC=>TS_FLIGHTSCHEDULE
     raising
       /IWBEP/CX_MGW_BUSI_EXCEPTION
       /IWBEP/CX_MGW_TECH_EXCEPTION .
@@ -177,32 +104,31 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ZFLIGHT_MODEL_DPC IMPLEMENTATION.
+CLASS ZCL_ZFLIGHT_MODEL3_DPC IMPLEMENTATION.
 
 
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_CRT_ENTITY_BASE
-*&* This class has been generated on 10.05.2021 19:01:18 in client 001
+*&* This class has been generated on 10.05.2021 17:40:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
-*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
+*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL3_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
 
- DATA flightplanset_create_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_create_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
+ DATA flightschedulese_create_entity TYPE zcl_zflight_model3_mpc=>ts_flightschedule.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
 
 CASE lv_entityset_name.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSet
+*             EntitySet -  FlightScheduleSet
 *-------------------------------------------------------------------------*
-     WHEN 'FlightPlanSet'.
+     WHEN 'FlightScheduleSet'.
 *     Call the entity set generated method
-    flightplanset_create_entity(
+    flightschedulese_create_entity(
          EXPORTING iv_entity_name     = iv_entity_name
                    iv_entity_set_name = iv_entity_set_name
                    iv_source_name     = iv_source_name
@@ -210,35 +136,12 @@ CASE lv_entityset_name.
                    it_key_tab         = it_key_tab
                    it_navigation_path = it_navigation_path
                    io_tech_request_context = io_tech_request_context
-       	 IMPORTING er_entity          = flightplanset_create_entity
+       	 IMPORTING er_entity          = flightschedulese_create_entity
     ).
 *     Send specific entity data to the caller interfaces
     copy_data_to_ref(
       EXPORTING
-        is_data = flightplanset_create_entity
-      CHANGING
-        cr_data = er_entity
-   ).
-
-*-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-     WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-    flightplansyncse_create_entity(
-         EXPORTING iv_entity_name     = iv_entity_name
-                   iv_entity_set_name = iv_entity_set_name
-                   iv_source_name     = iv_source_name
-                   io_data_provider   = io_data_provider
-                   it_key_tab         = it_key_tab
-                   it_navigation_path = it_navigation_path
-                   io_tech_request_context = io_tech_request_context
-       	 IMPORTING er_entity          = flightplansyncse_create_entity
-    ).
-*     Send specific entity data to the caller interfaces
-    copy_data_to_ref(
-      EXPORTING
-        is_data = flightplansyncse_create_entity
+        is_data = flightschedulese_create_entity
       CHANGING
         cr_data = er_entity
    ).
@@ -262,11 +165,11 @@ ENDCASE.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~DELETE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_DEL_ENTITY_BASE
-*&* This class has been generated on 10.05.2021 19:01:18 in client 001
+*&* This class has been generated on 10.05.2021 17:40:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
-*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
+*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL3_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
 
  DATA lv_entityset_name TYPE string.
@@ -275,25 +178,11 @@ lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
 
 CASE lv_entityset_name.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSet
+*             EntitySet -  FlightScheduleSet
 *-------------------------------------------------------------------------*
-      when 'FlightPlanSet'.
+      when 'FlightScheduleSet'.
 *     Call the entity set generated method
-     flightplanset_delete_entity(
-          EXPORTING iv_entity_name     = iv_entity_name
-                    iv_entity_set_name = iv_entity_set_name
-                    iv_source_name     = iv_source_name
-                    it_key_tab         = it_key_tab
-                    it_navigation_path = it_navigation_path
-                    io_tech_request_context = io_tech_request_context
-     ).
-
-*-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-      when 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-     flightplansyncse_delete_entity(
+     flightschedulese_delete_entity(
           EXPORTING iv_entity_name     = iv_entity_name
                     iv_entity_set_name = iv_entity_set_name
                     iv_source_name     = iv_source_name
@@ -318,15 +207,14 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY.
 *&-----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_GETENTITY_BASE
-*&* This class has been generated  on 10.05.2021 19:01:18 in client 001
+*&* This class has been generated  on 10.05.2021 17:40:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
-*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
+*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL3_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
 
- DATA flightplanset_get_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_get_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
+ DATA flightschedulese_get_entity TYPE zcl_zflight_model3_mpc=>ts_flightschedule.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data.       "#EC NEEDED
 
@@ -334,54 +222,26 @@ lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
 
 CASE lv_entityset_name.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSet
+*             EntitySet -  FlightScheduleSet
 *-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSet'.
+      WHEN 'FlightScheduleSet'.
 *     Call the entity set generated method
-          flightplanset_get_entity(
+          flightschedulese_get_entity(
                EXPORTING iv_entity_name     = iv_entity_name
                          iv_entity_set_name = iv_entity_set_name
                          iv_source_name     = iv_source_name
                          it_key_tab         = it_key_tab
                          it_navigation_path = it_navigation_path
                          io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplanset_get_entity
+             	 IMPORTING er_entity          = flightschedulese_get_entity
                          es_response_context = es_response_context
           ).
 
-        IF flightplanset_get_entity IS NOT INITIAL.
+        IF flightschedulese_get_entity IS NOT INITIAL.
 *     Send specific entity data to the caller interface
           copy_data_to_ref(
             EXPORTING
-              is_data = flightplanset_get_entity
-            CHANGING
-              cr_data = er_entity
-          ).
-        ELSE.
-*         In case of initial values - unbind the entity reference
-          er_entity = lr_entity.
-        ENDIF.
-*-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-          flightplansyncse_get_entity(
-               EXPORTING iv_entity_name     = iv_entity_name
-                         iv_entity_set_name = iv_entity_set_name
-                         iv_source_name     = iv_source_name
-                         it_key_tab         = it_key_tab
-                         it_navigation_path = it_navigation_path
-                         io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplansyncse_get_entity
-                         es_response_context = es_response_context
-          ).
-
-        IF flightplansyncse_get_entity IS NOT INITIAL.
-*     Send specific entity data to the caller interface
-          copy_data_to_ref(
-            EXPORTING
-              is_data = flightplansyncse_get_entity
+              is_data = flightschedulese_get_entity
             CHANGING
               cr_data = er_entity
           ).
@@ -408,25 +268,24 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TMP_ENTITYSET_BASE
-*&* This class has been generated on 10.05.2021 19:01:18 in client 001
+*&* This class has been generated on 10.05.2021 17:40:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
-*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
+*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL3_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
- DATA flightplanset_get_entityset TYPE zcl_zflight_model_mpc=>tt_flightplan.
- DATA flightplansyncse_get_entityset TYPE zcl_zflight_model_mpc=>tt_flightplansync.
+ DATA flightschedulese_get_entityset TYPE zcl_zflight_model3_mpc=>tt_flightschedule.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
 
 CASE lv_entityset_name.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSet
+*             EntitySet -  FlightScheduleSet
 *-------------------------------------------------------------------------*
-   WHEN 'FlightPlanSet'.
+   WHEN 'FlightScheduleSet'.
 *     Call the entity set generated method
-      flightplanset_get_entityset(
+      flightschedulese_get_entityset(
         EXPORTING
          iv_entity_name = iv_entity_name
          iv_entity_set_name = iv_entity_set_name
@@ -440,43 +299,13 @@ CASE lv_entityset_name.
          iv_search_string = iv_search_string
          io_tech_request_context = io_tech_request_context
        IMPORTING
-         et_entityset = flightplanset_get_entityset
+         et_entityset = flightschedulese_get_entityset
          es_response_context = es_response_context
        ).
 *     Send specific entity data to the caller interface
       copy_data_to_ref(
         EXPORTING
-          is_data = flightplanset_get_entityset
-        CHANGING
-          cr_data = er_entityset
-      ).
-
-*-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-   WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-      flightplansyncse_get_entityset(
-        EXPORTING
-         iv_entity_name = iv_entity_name
-         iv_entity_set_name = iv_entity_set_name
-         iv_source_name = iv_source_name
-         it_filter_select_options = it_filter_select_options
-         it_order = it_order
-         is_paging = is_paging
-         it_navigation_path = it_navigation_path
-         it_key_tab = it_key_tab
-         iv_filter_string = iv_filter_string
-         iv_search_string = iv_search_string
-         io_tech_request_context = io_tech_request_context
-       IMPORTING
-         et_entityset = flightplansyncse_get_entityset
-         es_response_context = es_response_context
-       ).
-*     Send specific entity data to the caller interface
-      copy_data_to_ref(
-        EXPORTING
-          is_data = flightplansyncse_get_entityset
+          is_data = flightschedulese_get_entityset
         CHANGING
           cr_data = er_entityset
       ).
@@ -504,15 +333,14 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~UPDATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_UPD_ENTITY_BASE
-*&* This class has been generated on 10.05.2021 19:01:18 in client 001
+*&* This class has been generated on 10.05.2021 17:40:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
-*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
+*&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL3_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
 
- DATA flightplanset_update_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_update_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
+ DATA flightschedulese_update_entity TYPE zcl_zflight_model3_mpc=>ts_flightschedule.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data. "#EC NEEDED
 
@@ -520,11 +348,11 @@ lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
 
 CASE lv_entityset_name.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSet
+*             EntitySet -  FlightScheduleSet
 *-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSet'.
+      WHEN 'FlightScheduleSet'.
 *     Call the entity set generated method
-          flightplanset_update_entity(
+          flightschedulese_update_entity(
                EXPORTING iv_entity_name     = iv_entity_name
                          iv_entity_set_name = iv_entity_set_name
                          iv_source_name     = iv_source_name
@@ -532,40 +360,13 @@ CASE lv_entityset_name.
                          it_key_tab         = it_key_tab
                          it_navigation_path = it_navigation_path
                          io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplanset_update_entity
+             	 IMPORTING er_entity          = flightschedulese_update_entity
           ).
-       IF flightplanset_update_entity IS NOT INITIAL.
+       IF flightschedulese_update_entity IS NOT INITIAL.
 *     Send specific entity data to the caller interface
           copy_data_to_ref(
             EXPORTING
-              is_data = flightplanset_update_entity
-            CHANGING
-              cr_data = er_entity
-          ).
-        ELSE.
-*         In case of initial values - unbind the entity reference
-          er_entity = lr_entity.
-        ENDIF.
-*-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-          flightplansyncse_update_entity(
-               EXPORTING iv_entity_name     = iv_entity_name
-                         iv_entity_set_name = iv_entity_set_name
-                         iv_source_name     = iv_source_name
-                         io_data_provider   = io_data_provider
-                         it_key_tab         = it_key_tab
-                         it_navigation_path = it_navigation_path
-                         io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplansyncse_update_entity
-          ).
-       IF flightplansyncse_update_entity IS NOT INITIAL.
-*     Send specific entity data to the caller interface
-          copy_data_to_ref(
-            EXPORTING
-              is_data = flightplansyncse_update_entity
+              is_data = flightschedulese_update_entity
             CHANGING
               cr_data = er_entity
           ).
@@ -708,82 +509,42 @@ lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
   endmethod.
 
 
-  method FLIGHTPLANSET_CREATE_ENTITY.
+  method FLIGHTSCHEDULESE_CREATE_ENTITY.
   RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSET_CREATE_ENTITY'.
+      method = 'FLIGHTSCHEDULESE_CREATE_ENTITY'.
   endmethod.
 
 
-  method FLIGHTPLANSET_DELETE_ENTITY.
+  method FLIGHTSCHEDULESE_DELETE_ENTITY.
   RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSET_DELETE_ENTITY'.
+      method = 'FLIGHTSCHEDULESE_DELETE_ENTITY'.
   endmethod.
 
 
-  method FLIGHTPLANSET_GET_ENTITY.
+  method FLIGHTSCHEDULESE_GET_ENTITY.
   RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSET_GET_ENTITY'.
+      method = 'FLIGHTSCHEDULESE_GET_ENTITY'.
   endmethod.
 
 
-  method FLIGHTPLANSET_GET_ENTITYSET.
+  method FLIGHTSCHEDULESE_GET_ENTITYSET.
   RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSET_GET_ENTITYSET'.
+      method = 'FLIGHTSCHEDULESE_GET_ENTITYSET'.
   endmethod.
 
 
-  method FLIGHTPLANSET_UPDATE_ENTITY.
+  method FLIGHTSCHEDULESE_UPDATE_ENTITY.
   RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
     EXPORTING
       textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSET_UPDATE_ENTITY'.
-  endmethod.
-
-
-  method FLIGHTPLANSYNCSE_CREATE_ENTITY.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSYNCSE_CREATE_ENTITY'.
-  endmethod.
-
-
-  method FLIGHTPLANSYNCSE_DELETE_ENTITY.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSYNCSE_DELETE_ENTITY'.
-  endmethod.
-
-
-  method FLIGHTPLANSYNCSE_GET_ENTITY.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSYNCSE_GET_ENTITY'.
-  endmethod.
-
-
-  method FLIGHTPLANSYNCSE_GET_ENTITYSET.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSYNCSE_GET_ENTITYSET'.
-  endmethod.
-
-
-  method FLIGHTPLANSYNCSE_UPDATE_ENTITY.
-  RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
-    EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'FLIGHTPLANSYNCSE_UPDATE_ENTITY'.
+      method = 'FLIGHTSCHEDULESE_UPDATE_ENTITY'.
   endmethod.
 ENDCLASS.
