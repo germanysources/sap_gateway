@@ -31,7 +31,17 @@
     <item>
      <SPRSL>D</SPRSL>
      <MSGNR>002</MSGNR>
-     <TEXT>FLug wurde in der Zwischenzeit geändert. Bitte aktualisieren.</TEXT>
+     <TEXT>Flug wurde in der Zwischenzeit geändert. Bitte aktualisieren.</TEXT>
+    </item>
+    <item>
+     <SPRSL>D</SPRSL>
+     <MSGNR>003</MSGNR>
+     <TEXT>Objekt ist gerade in Bearbeitung</TEXT>
+    </item>
+    <item>
+     <SPRSL>D</SPRSL>
+     <MSGNR>004</MSGNR>
+     <TEXT>Flughafen &amp;1 unbekannt.</TEXT>
     </item>
    </T100_TEXTS>
   </asx:values>

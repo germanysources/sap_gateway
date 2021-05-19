@@ -40,11 +40,38 @@ CLASS zcl_zflight_model_dpc_ext DEFINITION
       RAISING
         /iwbep/cx_mgw_busi_exception.
 
+    METHODS check_last_change
+      IMPORTING
+        flight_plan_entity TYPE zspfliv
+      RAISING
+        /iwbep/cx_mgw_busi_exception.
+
+    METHODS verify_airport
+      IMPORTING
+        flight_plan_entity TYPE spfli
+      RAISING
+        /iwbep/cx_mgw_busi_exception.
+
 ENDCLASS.
 
 
 
 CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
+
+
+  METHOD check_last_change.
+
+    SELECT COUNT(*) FROM zspfli_changes
+      WHERE carrid = flight_plan_entity-carrid AND connid = flight_plan_entity-connid
+      AND last_change > flight_plan_entity-last_change.
+    IF sy-subrc = 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 002 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
+    ENDIF.
+
+  ENDMETHOD.
 
 
   METHOD flightplanset_create_entity.
@@ -117,10 +144,13 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
 
 
   METHOD flightplanset_update_entity.
-    DATA: flight_plan_entity                 TYPE spfli.
+    DATA: flight_plan_entity TYPE spfli,
+          last_change        TYPE zspfli_changes.
 
     io_data_provider->read_entry_data( IMPORTING es_data = flight_plan_entity ).
     verify_primary_key( it_key_tab = it_key_tab flight_plan_entity = flight_plan_entity ).
+
+    verify_airport( flight_plan_entity ).
 
     UPDATE spfli FROM flight_plan_entity.
     IF sy-subrc = 0.
@@ -131,6 +161,11 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
           textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 001 )
           http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
     ENDIF.
+
+    last_change-carrid = flight_plan_entity-carrid.
+    last_change-connid = flight_plan_entity-connid.
+    GET TIME STAMP FIELD last_change-last_change.
+    MODIFY zspfli_changes FROM last_change.
 
   ENDMETHOD.
 
@@ -180,26 +215,33 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
 
 
   METHOD flightplansyncse_update_entity.
-    DATA: flight_plan_entity TYPE zspfliv,
+    DATA: flight_plan_entity    TYPE zspfliv,
           flight_plan_db_entity TYPE spfli,
-          flight_plan_changes TYPE zspfli_changes.
+          last_change           TYPE zspfli_changes.
 
     io_data_provider->read_entry_data( IMPORTING es_data = flight_plan_entity ).
+
+    CALL FUNCTION 'ENQUEUE_EZSPFLI'
+      EXPORTING
+        carrid       = flight_plan_entity-carrid
+        connid       = flight_plan_entity-connid
+      EXCEPTIONS
+        foreign_lock = 4.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 003 )
+          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-forbidden.
+    ENDIF.
+
+    check_last_change( flight_plan_entity ).
+
     ##ENH_OK
     MOVE-CORRESPONDING flight_plan_entity TO flight_plan_db_entity.
     ##ENH_OK
-    MOVE-CORRESPONDING flight_plan_entity TO flight_plan_changes.
+    MOVE-CORRESPONDING flight_plan_entity TO last_change.
     verify_primary_key( it_key_tab = it_key_tab flight_plan_entity = flight_plan_db_entity ).
-
-    SELECT COUNT(*) FROM zspfli_changes
-      WHERE carrid = flight_plan_entity-carrid AND connid = flight_plan_entity-connid
-      AND last_change > flight_plan_entity-last_change.
-    IF sy-subrc = 0.
-      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
-        EXPORTING
-          textid           = VALUE #( msgid = 'ZFLIGHT_MODEL' msgno = 002 )
-          http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
-    ENDIF.
+    verify_airport( flight_plan_db_entity ).
 
     UPDATE spfli FROM flight_plan_db_entity.
     IF sy-subrc = 0.
@@ -211,8 +253,8 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
           http_status_code = /iwbep/cx_mgw_busi_exception=>gcs_http_status_codes-bad_request.
     ENDIF.
 
-    GET TIME STAMP FIELD flight_plan_changes-last_change.
-    MODIFY zspfli_changes FROM flight_plan_changes.
+    GET TIME STAMP FIELD last_change-last_change.
+    MODIFY zspfli_changes FROM last_change.
 
   ENDMETHOD.
 
@@ -227,6 +269,29 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
         <comp> = key_value_pair->*-value.
       ENDIF.
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD verify_airport.
+
+    SELECT COUNT(*) FROM sairport
+      WHERE id = flight_plan_entity-airpfrom.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_flight_model
+        EXPORTING
+          textid  = zcx_flight_model=>airport_unknown
+          airport = flight_plan_entity-airpfrom.
+    ENDIF.
+
+    SELECT COUNT(*) FROM sairport
+      WHERE id = flight_plan_entity-airpto.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_flight_model
+        EXPORTING
+          textid  = zcx_flight_model=>airport_unknown
+          airport = flight_plan_entity-airpto.
+    ENDIF.
 
   ENDMETHOD.
 

@@ -19,6 +19,16 @@ START-OF-SELECTION.
   ).
   MODIFY spfli FROM TABLE plan.
 
+  DATA(last_change) = VALUE zspfli_changes( carrid = 'LH' connid = '0700' ).
+  GET TIME STAMP FIELD last_change-last_change.
+  MODIFY zspfli_changes FROM last_change.
+  last_change = VALUE #( carrid = 'EK' connid = '0400' ).
+  GET TIME STAMP FIELD last_change-last_change.
+  MODIFY zspfli_changes FROM last_change.
+  last_change = VALUE #( carrid = 'EK' connid = '0500' ).
+  GET TIME STAMP FIELD last_change-last_change.
+  MODIFY zspfli_changes FROM last_change.
+
   DATA(flight) = VALUE sflight( carrid = 'LH' connid = '0700'
     fldate = '20201101' ).
   MODIFY sflight FROM flight.

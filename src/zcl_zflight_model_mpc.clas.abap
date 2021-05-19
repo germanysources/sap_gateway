@@ -199,7 +199,6 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_value    = 'false' ).
 lo_property = lo_entity_type->create_property( iv_property_name = 'FlightTimesInMinutes' iv_abap_fieldname = 'FLTIME' ). "#EC NOTEXT
 lo_property->set_type_edm_int32( ).
-lo_property->set_conversion_exit( 'SDURA' ). "#EC NOTEXT
 lo_property->set_creatable( abap_false ).
 lo_property->set_updatable( abap_false ).
 lo_property->set_sortable( abap_false ).
@@ -281,9 +280,7 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 
-lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI'
-                                iv_bind_conversions = 'X' ). "#EC NOTEXT
-
+lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI' ).
 
 ***********************************************************************************************************************************
 *   ENTITY SETS
@@ -430,7 +427,6 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_value    = 'false' ).
 lo_property = lo_entity_type->create_property( iv_property_name = 'FlightTimeInMinutes' iv_abap_fieldname = 'FLTIME' ). "#EC NOTEXT
 lo_property->set_type_edm_int32( ).
-lo_property->set_conversion_exit( 'SDURA' ). "#EC NOTEXT
 lo_property->set_creatable( abap_false ).
 lo_property->set_updatable( abap_false ).
 lo_property->set_sortable( abap_false ).
@@ -523,8 +519,7 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 
-lo_entity_type->bind_structure( iv_structure_name   = 'ZSPFLIV'
-                                iv_bind_conversions = 'X' ). "#EC NOTEXT
+lo_entity_type->bind_structure( iv_structure_name   = 'ZSPFLIV' ).
 
 
 ***********************************************************************************************************************************

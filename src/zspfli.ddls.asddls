@@ -21,6 +21,7 @@ define view zspfli as select from spfli as p
   p.distid,
   p.fltype,
   p.period,
-  c.last_change 
+  case when c.last_change is null then tstmp_current_utctimestamp()
+    else c.last_change end as last_change 
 } 
  
