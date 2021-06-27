@@ -106,7 +106,12 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC_EXT IMPLEMENTATION.
 
     DATA(primary_key) = get_primary_key( it_key_tab ).
 
-    SELECT SINGLE * FROM spfli INTO er_entity
+    DATA(selected_fields) = io_tech_request_context->get_select_with_mandtry_fields( ).
+    IF selected_fields IS INITIAL.
+      INSERT CONV string( '*' ) INTO TABLE selected_fields.
+    ENDIF.
+
+    SELECT SINGLE (selected_fields) FROM spfli INTO er_entity
       WHERE carrid = primary_key-carrierid
       AND connid = primary_key-connectionid.
 

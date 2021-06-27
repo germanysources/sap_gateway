@@ -257,7 +257,7 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC IMPLEMENTATION.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_CRT_ENTITY_BASE
-*&* This class has been generated on 27.05.2021 18:49:34 in client 001
+*&* This class has been generated on 27.06.2021 09:29:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -265,8 +265,8 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC IMPLEMENTATION.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA flightplanset_create_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_create_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA airportvaluehelp_create_entity TYPE zcl_zflight_model_mpc=>ts_airportvaluehelp.
+ DATA flightplansyncse_create_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
@@ -296,29 +296,6 @@ CASE lv_entityset_name.
    ).
 
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-     WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-    flightplansyncse_create_entity(
-         EXPORTING iv_entity_name     = iv_entity_name
-                   iv_entity_set_name = iv_entity_set_name
-                   iv_source_name     = iv_source_name
-                   io_data_provider   = io_data_provider
-                   it_key_tab         = it_key_tab
-                   it_navigation_path = it_navigation_path
-                   io_tech_request_context = io_tech_request_context
-       	 IMPORTING er_entity          = flightplansyncse_create_entity
-    ).
-*     Send specific entity data to the caller interfaces
-    copy_data_to_ref(
-      EXPORTING
-        is_data = flightplansyncse_create_entity
-      CHANGING
-        cr_data = er_entity
-   ).
-
-*-------------------------------------------------------------------------*
 *             EntitySet -  AirportValueHelpSet
 *-------------------------------------------------------------------------*
      WHEN 'AirportValueHelpSet'.
@@ -337,6 +314,29 @@ CASE lv_entityset_name.
     copy_data_to_ref(
       EXPORTING
         is_data = airportvaluehelp_create_entity
+      CHANGING
+        cr_data = er_entity
+   ).
+
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightPlanSyncSet
+*-------------------------------------------------------------------------*
+     WHEN 'FlightPlanSyncSet'.
+*     Call the entity set generated method
+    flightplansyncse_create_entity(
+         EXPORTING iv_entity_name     = iv_entity_name
+                   iv_entity_set_name = iv_entity_set_name
+                   iv_source_name     = iv_source_name
+                   io_data_provider   = io_data_provider
+                   it_key_tab         = it_key_tab
+                   it_navigation_path = it_navigation_path
+                   io_tech_request_context = io_tech_request_context
+       	 IMPORTING er_entity          = flightplansyncse_create_entity
+    ).
+*     Send specific entity data to the caller interfaces
+    copy_data_to_ref(
+      EXPORTING
+        is_data = flightplansyncse_create_entity
       CHANGING
         cr_data = er_entity
    ).
@@ -360,7 +360,7 @@ ENDCASE.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~DELETE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_DEL_ENTITY_BASE
-*&* This class has been generated on 27.05.2021 18:49:34 in client 001
+*&* This class has been generated on 27.06.2021 09:29:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -387,11 +387,11 @@ CASE lv_entityset_name.
      ).
 
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
+*             EntitySet -  AirportValueHelpSet
 *-------------------------------------------------------------------------*
-      when 'FlightPlanSyncSet'.
+      when 'AirportValueHelpSet'.
 *     Call the entity set generated method
-     flightplansyncse_delete_entity(
+     airportvaluehelp_delete_entity(
           EXPORTING iv_entity_name     = iv_entity_name
                     iv_entity_set_name = iv_entity_set_name
                     iv_source_name     = iv_source_name
@@ -401,11 +401,11 @@ CASE lv_entityset_name.
      ).
 
 *-------------------------------------------------------------------------*
-*             EntitySet -  AirportValueHelpSet
+*             EntitySet -  FlightPlanSyncSet
 *-------------------------------------------------------------------------*
-      when 'AirportValueHelpSet'.
+      when 'FlightPlanSyncSet'.
 *     Call the entity set generated method
-     airportvaluehelp_delete_entity(
+     flightplansyncse_delete_entity(
           EXPORTING iv_entity_name     = iv_entity_name
                     iv_entity_set_name = iv_entity_set_name
                     iv_source_name     = iv_source_name
@@ -430,7 +430,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY.
 *&-----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_GETENTITY_BASE
-*&* This class has been generated  on 27.05.2021 18:49:34 in client 001
+*&* This class has been generated  on 27.06.2021 09:29:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -438,8 +438,8 @@ CASE lv_entityset_name.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA flightplanset_get_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_get_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA airportvaluehelp_get_entity TYPE zcl_zflight_model_mpc=>ts_airportvaluehelp.
+ DATA flightplansyncse_get_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data.       "#EC NEEDED
 
@@ -475,34 +475,6 @@ CASE lv_entityset_name.
           er_entity = lr_entity.
         ENDIF.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-          flightplansyncse_get_entity(
-               EXPORTING iv_entity_name     = iv_entity_name
-                         iv_entity_set_name = iv_entity_set_name
-                         iv_source_name     = iv_source_name
-                         it_key_tab         = it_key_tab
-                         it_navigation_path = it_navigation_path
-                         io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplansyncse_get_entity
-                         es_response_context = es_response_context
-          ).
-
-        IF flightplansyncse_get_entity IS NOT INITIAL.
-*     Send specific entity data to the caller interface
-          copy_data_to_ref(
-            EXPORTING
-              is_data = flightplansyncse_get_entity
-            CHANGING
-              cr_data = er_entity
-          ).
-        ELSE.
-*         In case of initial values - unbind the entity reference
-          er_entity = lr_entity.
-        ENDIF.
-*-------------------------------------------------------------------------*
 *             EntitySet -  AirportValueHelpSet
 *-------------------------------------------------------------------------*
       WHEN 'AirportValueHelpSet'.
@@ -530,6 +502,34 @@ CASE lv_entityset_name.
 *         In case of initial values - unbind the entity reference
           er_entity = lr_entity.
         ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightPlanSyncSet
+*-------------------------------------------------------------------------*
+      WHEN 'FlightPlanSyncSet'.
+*     Call the entity set generated method
+          flightplansyncse_get_entity(
+               EXPORTING iv_entity_name     = iv_entity_name
+                         iv_entity_set_name = iv_entity_set_name
+                         iv_source_name     = iv_source_name
+                         it_key_tab         = it_key_tab
+                         it_navigation_path = it_navigation_path
+                         io_tech_request_context = io_tech_request_context
+             	 IMPORTING er_entity          = flightplansyncse_get_entity
+                         es_response_context = es_response_context
+          ).
+
+        IF flightplansyncse_get_entity IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = flightplansyncse_get_entity
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
 
       WHEN OTHERS.
         super->/iwbep/if_mgw_appl_srv_runtime~get_entity(
@@ -549,15 +549,15 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TMP_ENTITYSET_BASE
-*&* This class has been generated on 27.05.2021 18:49:34 in client 001
+*&* This class has been generated on 27.06.2021 09:29:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
 *&*   generated methods inside the DPC provider subclass - ZCL_ZFLIGHT_MODEL_DPC_EXT
 *&-----------------------------------------------------------------------------------------------*
  DATA flightplanset_get_entityset TYPE zcl_zflight_model_mpc=>tt_flightplan.
- DATA flightplansyncse_get_entityset TYPE zcl_zflight_model_mpc=>tt_flightplansync.
  DATA airportvaluehelp_get_entityset TYPE zcl_zflight_model_mpc=>tt_airportvaluehelp.
+ DATA flightplansyncse_get_entityset TYPE zcl_zflight_model_mpc=>tt_flightplansync.
  DATA lv_entityset_name TYPE string.
 
 lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
@@ -594,36 +594,6 @@ CASE lv_entityset_name.
       ).
 
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-   WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-      flightplansyncse_get_entityset(
-        EXPORTING
-         iv_entity_name = iv_entity_name
-         iv_entity_set_name = iv_entity_set_name
-         iv_source_name = iv_source_name
-         it_filter_select_options = it_filter_select_options
-         it_order = it_order
-         is_paging = is_paging
-         it_navigation_path = it_navigation_path
-         it_key_tab = it_key_tab
-         iv_filter_string = iv_filter_string
-         iv_search_string = iv_search_string
-         io_tech_request_context = io_tech_request_context
-       IMPORTING
-         et_entityset = flightplansyncse_get_entityset
-         es_response_context = es_response_context
-       ).
-*     Send specific entity data to the caller interface
-      copy_data_to_ref(
-        EXPORTING
-          is_data = flightplansyncse_get_entityset
-        CHANGING
-          cr_data = er_entityset
-      ).
-
-*-------------------------------------------------------------------------*
 *             EntitySet -  AirportValueHelpSet
 *-------------------------------------------------------------------------*
    WHEN 'AirportValueHelpSet'.
@@ -653,6 +623,36 @@ CASE lv_entityset_name.
           cr_data = er_entityset
       ).
 
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightPlanSyncSet
+*-------------------------------------------------------------------------*
+   WHEN 'FlightPlanSyncSet'.
+*     Call the entity set generated method
+      flightplansyncse_get_entityset(
+        EXPORTING
+         iv_entity_name = iv_entity_name
+         iv_entity_set_name = iv_entity_set_name
+         iv_source_name = iv_source_name
+         it_filter_select_options = it_filter_select_options
+         it_order = it_order
+         is_paging = is_paging
+         it_navigation_path = it_navigation_path
+         it_key_tab = it_key_tab
+         iv_filter_string = iv_filter_string
+         iv_search_string = iv_search_string
+         io_tech_request_context = io_tech_request_context
+       IMPORTING
+         et_entityset = flightplansyncse_get_entityset
+         es_response_context = es_response_context
+       ).
+*     Send specific entity data to the caller interface
+      copy_data_to_ref(
+        EXPORTING
+          is_data = flightplansyncse_get_entityset
+        CHANGING
+          cr_data = er_entityset
+      ).
+
     WHEN OTHERS.
       super->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
         EXPORTING
@@ -676,7 +676,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~UPDATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_UPD_ENTITY_BASE
-*&* This class has been generated on 27.05.2021 18:49:34 in client 001
+*&* This class has been generated on 27.06.2021 09:29:26 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -684,8 +684,8 @@ CASE lv_entityset_name.
 *&-----------------------------------------------------------------------------------------------*
 
  DATA flightplanset_update_entity TYPE zcl_zflight_model_mpc=>ts_flightplan.
- DATA flightplansyncse_update_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA airportvaluehelp_update_entity TYPE zcl_zflight_model_mpc=>ts_airportvaluehelp.
+ DATA flightplansyncse_update_entity TYPE zcl_zflight_model_mpc=>ts_flightplansync.
  DATA lv_entityset_name TYPE string.
  DATA lr_entity TYPE REF TO data. "#EC NEEDED
 
@@ -720,33 +720,6 @@ CASE lv_entityset_name.
           er_entity = lr_entity.
         ENDIF.
 *-------------------------------------------------------------------------*
-*             EntitySet -  FlightPlanSyncSet
-*-------------------------------------------------------------------------*
-      WHEN 'FlightPlanSyncSet'.
-*     Call the entity set generated method
-          flightplansyncse_update_entity(
-               EXPORTING iv_entity_name     = iv_entity_name
-                         iv_entity_set_name = iv_entity_set_name
-                         iv_source_name     = iv_source_name
-                         io_data_provider   = io_data_provider
-                         it_key_tab         = it_key_tab
-                         it_navigation_path = it_navigation_path
-                         io_tech_request_context = io_tech_request_context
-             	 IMPORTING er_entity          = flightplansyncse_update_entity
-          ).
-       IF flightplansyncse_update_entity IS NOT INITIAL.
-*     Send specific entity data to the caller interface
-          copy_data_to_ref(
-            EXPORTING
-              is_data = flightplansyncse_update_entity
-            CHANGING
-              cr_data = er_entity
-          ).
-        ELSE.
-*         In case of initial values - unbind the entity reference
-          er_entity = lr_entity.
-        ENDIF.
-*-------------------------------------------------------------------------*
 *             EntitySet -  AirportValueHelpSet
 *-------------------------------------------------------------------------*
       WHEN 'AirportValueHelpSet'.
@@ -766,6 +739,33 @@ CASE lv_entityset_name.
           copy_data_to_ref(
             EXPORTING
               is_data = airportvaluehelp_update_entity
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  FlightPlanSyncSet
+*-------------------------------------------------------------------------*
+      WHEN 'FlightPlanSyncSet'.
+*     Call the entity set generated method
+          flightplansyncse_update_entity(
+               EXPORTING iv_entity_name     = iv_entity_name
+                         iv_entity_set_name = iv_entity_set_name
+                         iv_source_name     = iv_source_name
+                         io_data_provider   = io_data_provider
+                         it_key_tab         = it_key_tab
+                         it_navigation_path = it_navigation_path
+                         io_tech_request_context = io_tech_request_context
+             	 IMPORTING er_entity          = flightplansyncse_update_entity
+          ).
+       IF flightplansyncse_update_entity IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = flightplansyncse_update_entity
             CHANGING
               cr_data = er_entity
           ).
@@ -1004,12 +1004,12 @@ LOOP AT lt_result_list INTO ls_result_list.
 
   " Move SH results to GW request responce table
   CASE ls_result_list-field_name.
-    WHEN 'AIRPORT'.
-      er_entity-airport = ls_result_list-field_value.
-    WHEN 'COUNTRY'.
-      er_entity-country = ls_result_list-field_value.
     WHEN 'CITY'.
       er_entity-city = ls_result_list-field_value.
+    WHEN 'COUNTRY'.
+      er_entity-country = ls_result_list-field_value.
+    WHEN 'AIRPORT'.
+      er_entity-airport = ls_result_list-field_value.
   ENDCASE.
 
 ENDLOOP.
@@ -1032,12 +1032,12 @@ DATA lt_selopt TYPE ddshselops.
 DATA ls_selopt LIKE LINE OF lt_selopt.
 DATA ls_filter TYPE /iwbep/s_mgw_select_option.
 DATA ls_filter_range TYPE /iwbep/s_cod_select_option.
-DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
-DATA ls_airport LIKE LINE OF lr_airport.
-DATA lr_country LIKE RANGE OF ls_converted_keys-country.
-DATA ls_country LIKE LINE OF lr_country.
 DATA lr_city LIKE RANGE OF ls_converted_keys-city.
 DATA ls_city LIKE LINE OF lr_city.
+DATA lr_country LIKE RANGE OF ls_converted_keys-country.
+DATA ls_country LIKE LINE OF lr_country.
+DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
+DATA ls_airport LIKE LINE OF lr_airport.
 DATA lt_result_list TYPE /iwbep/if_sb_gendpc_shlp_data=>tt_result_list.
 DATA lv_next TYPE i VALUE 1.
 DATA ls_entityset LIKE LINE OF et_entityset.
@@ -1091,19 +1091,19 @@ LOOP AT lt_filter_select_options INTO ls_filter.
 
   LOOP AT ls_filter-select_options INTO ls_filter_range.
     CASE ls_filter-property.
-      WHEN 'AIRPORT'.              " Equivalent to 'Airport' property in the service
+      WHEN 'CITY'.              " Equivalent to 'City' property in the service
         lo_filter->convert_select_option(
           EXPORTING
             is_select_option = ls_filter
           IMPORTING
-            et_select_option = lr_airport ).
+            et_select_option = lr_city ).
 
-        LOOP AT lr_airport INTO ls_airport.
-          ls_selopt-sign = ls_airport-sign.
-          ls_selopt-option = ls_airport-option.
-          ls_selopt-low = ls_airport-low.
-          ls_selopt-high = ls_airport-high.
-          ls_selopt-shlpfield = 'AIRPORT'.
+        LOOP AT lr_city INTO ls_city.
+          ls_selopt-high = ls_city-high.
+          ls_selopt-low = ls_city-low.
+          ls_selopt-option = ls_city-option.
+          ls_selopt-sign = ls_city-sign.
+          ls_selopt-shlpfield = 'CITY'.
           ls_selopt-shlpname = 'SCITAIRP'.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
@@ -1116,28 +1116,28 @@ LOOP AT lt_filter_select_options INTO ls_filter.
             et_select_option = lr_country ).
 
         LOOP AT lr_country INTO ls_country.
-          ls_selopt-sign = ls_country-sign.
-          ls_selopt-option = ls_country-option.
-          ls_selopt-low = ls_country-low.
           ls_selopt-high = ls_country-high.
+          ls_selopt-low = ls_country-low.
+          ls_selopt-option = ls_country-option.
+          ls_selopt-sign = ls_country-sign.
           ls_selopt-shlpfield = 'COUNTRY'.
           ls_selopt-shlpname = 'SCITAIRP'.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
         ENDLOOP.
-      WHEN 'CITY'.              " Equivalent to 'City' property in the service
+      WHEN 'AIRPORT'.              " Equivalent to 'Airport' property in the service
         lo_filter->convert_select_option(
           EXPORTING
             is_select_option = ls_filter
           IMPORTING
-            et_select_option = lr_city ).
+            et_select_option = lr_airport ).
 
-        LOOP AT lr_city INTO ls_city.
-          ls_selopt-sign = ls_city-sign.
-          ls_selopt-option = ls_city-option.
-          ls_selopt-low = ls_city-low.
-          ls_selopt-high = ls_city-high.
-          ls_selopt-shlpfield = 'CITY'.
+        LOOP AT lr_airport INTO ls_airport.
+          ls_selopt-high = ls_airport-high.
+          ls_selopt-low = ls_airport-low.
+          ls_selopt-option = ls_airport-option.
+          ls_selopt-sign = ls_airport-sign.
+          ls_selopt-shlpfield = 'AIRPORT'.
           ls_selopt-shlpname = 'SCITAIRP'.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
@@ -1195,12 +1195,12 @@ LOOP AT lt_result_list INTO ls_result_list
   " Move SH results to GW request responce table
   lv_next = sy-tabix + 1. " next loop iteration
   CASE ls_result_list-field_name.
-    WHEN 'CITY'.
-      ls_entityset-city = ls_result_list-field_value.
-    WHEN 'COUNTRY'.
-      ls_entityset-country = ls_result_list-field_value.
     WHEN 'AIRPORT'.
       ls_entityset-airport = ls_result_list-field_value.
+    WHEN 'COUNTRY'.
+      ls_entityset-country = ls_result_list-field_value.
+    WHEN 'CITY'.
+      ls_entityset-city = ls_result_list-field_value.
   ENDCASE.
 
   " Check if the next line in the result list is a new record

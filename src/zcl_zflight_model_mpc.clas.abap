@@ -20,10 +20,6 @@ public section.
   types:
              tt_text_elements type standard table of ts_text_element with key text_symbol .
   types:
-         TS_FLIGHTPLANSYNC type ZSPFLIV .
-  types:
-    TT_FLIGHTPLANSYNC type standard table of TS_FLIGHTPLANSYNC .
-  types:
       begin of TS_AIRPORTVALUEHELP,
      CITY type S_CITY,
      COUNTRY type LAND1,
@@ -32,6 +28,10 @@ public section.
   end of TS_AIRPORTVALUEHELP .
   types:
     TT_AIRPORTVALUEHELP type standard table of TS_AIRPORTVALUEHELP .
+  types:
+         TS_FLIGHTPLANSYNC type ZSPFLIV .
+  types:
+    TT_FLIGHTPLANSYNC type standard table of TS_FLIGHTPLANSYNC .
 
   constants GC_AIRPORTVALUEHELP type /IWBEP/IF_MGW_MED_ODATA_TYPES=>TY_E_MED_ENTITY_NAME value 'AirportValueHelp' ##NO_TEXT.
   constants GC_FLIGHTPLAN type /IWBEP/IF_MGW_MED_ODATA_TYPES=>TY_E_MED_ENTITY_NAME value 'FlightPlan' ##NO_TEXT.
@@ -56,10 +56,10 @@ private section.
   methods DEFINE_FLIGHTPLAN
     raising
       /IWBEP/CX_MGW_MED_EXCEPTION .
-  methods DEFINE_FLIGHTPLANSYNC
+  methods DEFINE_AIRPORTVALUEHELP
     raising
       /IWBEP/CX_MGW_MED_EXCEPTION .
-  methods DEFINE_AIRPORTVALUEHELP
+  methods DEFINE_FLIGHTPLANSYNC
     raising
       /IWBEP/CX_MGW_MED_EXCEPTION .
 ENDCLASS.
@@ -81,8 +81,8 @@ CLASS ZCL_ZFLIGHT_MODEL_MPC IMPLEMENTATION.
 model->set_schema_namespace( 'ZFLIGHT_MODEL_SRV_02' ).
 
 define_flightplan( ).
-define_flightplansync( ).
 define_airportvaluehelp( ).
+define_flightplansync( ).
   endmethod.
 
 
@@ -313,7 +313,8 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 lo_property = lo_entity_type->create_property( iv_property_name = 'FlightTimesInMinutes' iv_abap_fieldname = 'FLTIME' ). "#EC NOTEXT
-lo_property->set_type_edm_int32( ).
+lo_property->set_type_edm_string( ).
+lo_property->set_conversion_exit( 'SDURA' ). "#EC NOTEXT
 lo_property->set_creatable( abap_false ).
 lo_property->set_updatable( abap_false ).
 lo_property->set_sortable( abap_false ).
@@ -395,7 +396,8 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 
-lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI' ).
+lo_entity_type->bind_structure( iv_structure_name   = 'SPFLI'
+                                iv_bind_conversions = 'X' ). "#EC NOTEXT
 
 
 ***********************************************************************************************************************************
@@ -542,7 +544,8 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 lo_property = lo_entity_type->create_property( iv_property_name = 'FlightTimeInMinutes' iv_abap_fieldname = 'FLTIME' ). "#EC NOTEXT
-lo_property->set_type_edm_int32( ).
+lo_property->set_type_edm_string( ).
+lo_property->set_conversion_exit( 'SDURA' ). "#EC NOTEXT
 lo_property->set_creatable( abap_false ).
 lo_property->set_updatable( abap_false ).
 lo_property->set_sortable( abap_false ).
@@ -635,7 +638,8 @@ lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
         iv_key      = 'unicode'
         iv_value    = 'false' ).
 
-lo_entity_type->bind_structure( iv_structure_name   = 'ZSPFLIV' ).
+lo_entity_type->bind_structure( iv_structure_name   = 'ZSPFLIV'
+                                iv_bind_conversions = 'X' ). "#EC NOTEXT
 
 
 ***********************************************************************************************************************************
@@ -665,7 +669,7 @@ lo_entity_set->set_filter_required( abap_false ).
 *&---------------------------------------------------------------------*
 
 
-  CONSTANTS: lc_gen_date_time TYPE timestamp VALUE '20210527164932'.                  "#EC NOTEXT
+  CONSTANTS: lc_gen_date_time TYPE timestamp VALUE '20210627072924'.                  "#EC NOTEXT
   rv_last_modified = super->get_last_modified( ).
   IF rv_last_modified LT lc_gen_date_time.
     rv_last_modified = lc_gen_date_time.
@@ -686,15 +690,6 @@ lo_entity_set->set_filter_required( abap_false ).
 DATA:
      ls_text_element TYPE ts_text_element.                                 "#EC NEEDED
 CLEAR ls_text_element.
-
-
-clear ls_text_element.
-ls_text_element-artifact_name          = 'DepartureAirport'.                 "#EC NOTEXT
-ls_text_element-artifact_type          = 'PROP'.                                       "#EC NOTEXT
-ls_text_element-parent_artifact_name   = 'FlightPlanSync'.                            "#EC NOTEXT
-ls_text_element-parent_artifact_type   = 'ETYP'.                                       "#EC NOTEXT
-ls_text_element-text_symbol            = '001'.              "#EC NOTEXT
-APPEND ls_text_element TO rt_text_elements.
 
 
 clear ls_text_element.
@@ -724,6 +719,15 @@ ls_text_element-artifact_type          = 'PROP'.                                
 ls_text_element-parent_artifact_name   = 'AirportValueHelp'.                            "#EC NOTEXT
 ls_text_element-parent_artifact_type   = 'ETYP'.                                       "#EC NOTEXT
 ls_text_element-text_symbol            = '005'.              "#EC NOTEXT
+APPEND ls_text_element TO rt_text_elements.
+
+
+clear ls_text_element.
+ls_text_element-artifact_name          = 'DepartureAirport'.                 "#EC NOTEXT
+ls_text_element-artifact_type          = 'PROP'.                                       "#EC NOTEXT
+ls_text_element-parent_artifact_name   = 'FlightPlanSync'.                            "#EC NOTEXT
+ls_text_element-parent_artifact_type   = 'ETYP'.                                       "#EC NOTEXT
+ls_text_element-text_symbol            = '001'.              "#EC NOTEXT
 APPEND ls_text_element TO rt_text_elements.
   endmethod.
 ENDCLASS.
