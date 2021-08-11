@@ -257,7 +257,7 @@ CLASS ZCL_ZFLIGHT_MODEL_DPC IMPLEMENTATION.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~CREATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_CRT_ENTITY_BASE
-*&* This class has been generated on 27.06.2021 09:29:26 in client 001
+*&* This class has been generated on 11.08.2021 20:35:52 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -360,7 +360,7 @@ ENDCASE.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~DELETE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_DEL_ENTITY_BASE
-*&* This class has been generated on 27.06.2021 09:29:26 in client 001
+*&* This class has been generated on 11.08.2021 20:35:52 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -430,7 +430,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY.
 *&-----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_GETENTITY_BASE
-*&* This class has been generated  on 27.06.2021 09:29:26 in client 001
+*&* This class has been generated  on 11.08.2021 20:35:52 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -549,7 +549,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TMP_ENTITYSET_BASE
-*&* This class has been generated on 27.06.2021 09:29:26 in client 001
+*&* This class has been generated on 11.08.2021 20:35:52 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -676,7 +676,7 @@ CASE lv_entityset_name.
   method /IWBEP/IF_MGW_APPL_SRV_RUNTIME~UPDATE_ENTITY.
 *&----------------------------------------------------------------------------------------------*
 *&  Include           /IWBEP/DPC_TEMP_UPD_ENTITY_BASE
-*&* This class has been generated on 27.06.2021 09:29:26 in client 001
+*&* This class has been generated on 11.08.2021 20:35:52 in client 001
 *&*
 *&*       WARNING--> NEVER MODIFY THIS CLASS <--WARNING
 *&*   If you want to change the DPC implementation, use the
@@ -1004,12 +1004,12 @@ LOOP AT lt_result_list INTO ls_result_list.
 
   " Move SH results to GW request responce table
   CASE ls_result_list-field_name.
-    WHEN 'CITY'.
-      er_entity-city = ls_result_list-field_value.
-    WHEN 'COUNTRY'.
-      er_entity-country = ls_result_list-field_value.
     WHEN 'AIRPORT'.
       er_entity-airport = ls_result_list-field_value.
+    WHEN 'COUNTRY'.
+      er_entity-country = ls_result_list-field_value.
+    WHEN 'CITY'.
+      er_entity-city = ls_result_list-field_value.
   ENDCASE.
 
 ENDLOOP.
@@ -1032,12 +1032,12 @@ DATA lt_selopt TYPE ddshselops.
 DATA ls_selopt LIKE LINE OF lt_selopt.
 DATA ls_filter TYPE /iwbep/s_mgw_select_option.
 DATA ls_filter_range TYPE /iwbep/s_cod_select_option.
-DATA lr_city LIKE RANGE OF ls_converted_keys-city.
-DATA ls_city LIKE LINE OF lr_city.
-DATA lr_country LIKE RANGE OF ls_converted_keys-country.
-DATA ls_country LIKE LINE OF lr_country.
 DATA lr_airport LIKE RANGE OF ls_converted_keys-airport.
 DATA ls_airport LIKE LINE OF lr_airport.
+DATA lr_country LIKE RANGE OF ls_converted_keys-country.
+DATA ls_country LIKE LINE OF lr_country.
+DATA lr_city LIKE RANGE OF ls_converted_keys-city.
+DATA ls_city LIKE LINE OF lr_city.
 DATA lt_result_list TYPE /iwbep/if_sb_gendpc_shlp_data=>tt_result_list.
 DATA lv_next TYPE i VALUE 1.
 DATA ls_entityset LIKE LINE OF et_entityset.
@@ -1091,19 +1091,19 @@ LOOP AT lt_filter_select_options INTO ls_filter.
 
   LOOP AT ls_filter-select_options INTO ls_filter_range.
     CASE ls_filter-property.
-      WHEN 'CITY'.              " Equivalent to 'City' property in the service
+      WHEN 'AIRPORT'.              " Equivalent to 'Airport' property in the service
         lo_filter->convert_select_option(
           EXPORTING
             is_select_option = ls_filter
           IMPORTING
-            et_select_option = lr_city ).
+            et_select_option = lr_airport ).
 
-        LOOP AT lr_city INTO ls_city.
-          ls_selopt-high = ls_city-high.
-          ls_selopt-low = ls_city-low.
-          ls_selopt-option = ls_city-option.
-          ls_selopt-sign = ls_city-sign.
-          ls_selopt-shlpfield = 'CITY'.
+        LOOP AT lr_airport INTO ls_airport.
+          ls_selopt-high = ls_airport-high.
+          ls_selopt-low = ls_airport-low.
+          ls_selopt-option = ls_airport-option.
+          ls_selopt-sign = ls_airport-sign.
+          ls_selopt-shlpfield = 'AIRPORT'.
           ls_selopt-shlpname = 'SCITAIRP'.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
@@ -1125,19 +1125,19 @@ LOOP AT lt_filter_select_options INTO ls_filter.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
         ENDLOOP.
-      WHEN 'AIRPORT'.              " Equivalent to 'Airport' property in the service
+      WHEN 'CITY'.              " Equivalent to 'City' property in the service
         lo_filter->convert_select_option(
           EXPORTING
             is_select_option = ls_filter
           IMPORTING
-            et_select_option = lr_airport ).
+            et_select_option = lr_city ).
 
-        LOOP AT lr_airport INTO ls_airport.
-          ls_selopt-high = ls_airport-high.
-          ls_selopt-low = ls_airport-low.
-          ls_selopt-option = ls_airport-option.
-          ls_selopt-sign = ls_airport-sign.
-          ls_selopt-shlpfield = 'AIRPORT'.
+        LOOP AT lr_city INTO ls_city.
+          ls_selopt-high = ls_city-high.
+          ls_selopt-low = ls_city-low.
+          ls_selopt-option = ls_city-option.
+          ls_selopt-sign = ls_city-sign.
+          ls_selopt-shlpfield = 'CITY'.
           ls_selopt-shlpname = 'SCITAIRP'.
           APPEND ls_selopt TO lt_selopt.
           CLEAR ls_selopt.
@@ -1195,12 +1195,12 @@ LOOP AT lt_result_list INTO ls_result_list
   " Move SH results to GW request responce table
   lv_next = sy-tabix + 1. " next loop iteration
   CASE ls_result_list-field_name.
-    WHEN 'AIRPORT'.
-      ls_entityset-airport = ls_result_list-field_value.
-    WHEN 'COUNTRY'.
-      ls_entityset-country = ls_result_list-field_value.
     WHEN 'CITY'.
       ls_entityset-city = ls_result_list-field_value.
+    WHEN 'COUNTRY'.
+      ls_entityset-country = ls_result_list-field_value.
+    WHEN 'AIRPORT'.
+      ls_entityset-airport = ls_result_list-field_value.
   ENDCASE.
 
   " Check if the next line in the result list is a new record
