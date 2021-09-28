@@ -1,0 +1,3 @@
+[submodule "ui5_table_report"]
+	path = ui5_table_report
+	url = https://github.com/germanysources/ui5_table_report
